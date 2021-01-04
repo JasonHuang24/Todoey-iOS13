@@ -148,5 +148,5 @@ class TodoListViewController: UITableViewController {
 }
  //test2
 func func2() {
-    
+
 }
