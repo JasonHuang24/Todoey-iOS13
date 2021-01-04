@@ -146,7 +146,7 @@ class TodoListViewController: UITableViewController {
     }
     
 }
- //test2
-func func2() {
+ //test3
+func func3() {
 
 }
