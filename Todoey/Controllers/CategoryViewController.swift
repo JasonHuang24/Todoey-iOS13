@@ -8,7 +8,7 @@
 
 import UIKit
 import RealmSwift
-import SwipeCellKit
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
 
@@ -17,11 +17,18 @@ class CategoryViewController: SwipeTableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         loadCategories()
-        
         tableView.rowHeight = 80.0
+        
+        tableView.separatorStyle = .none
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist.")}
+        navBar.backgroundColor = UIColor(hexString: "1D9BF6")
+
     }
     
     //MARK: - TableView Datasource Methods
@@ -34,7 +41,19 @@ class CategoryViewController: SwipeTableViewController {
                
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories added yet."
+        //shortened variable of the commented out code below
+        if let category = categoryArray?[indexPath.row] {
+            cell.textLabel?.text = category.name
+            
+            guard let categoryColor = UIColor(hexString: category.color) else {fatalError()}
+            cell.backgroundColor = categoryColor
+            cell.textLabel?.textColor = ContrastColorOf(categoryColor, returnFlat: true)
+            
+        }
+        
+//        cell.textLabel?.text = categoryArray?[indexPath.row].name ?? "No Categories added yet."
+//        cell.backgroundColor = UIColor(hexString: categoryArray?[indexPath.row].color ?? "1D9BF6")
+        
         return cell
     }
     
@@ -95,8 +114,11 @@ class CategoryViewController: SwipeTableViewController {
         
         let action = UIAlertAction(title: "Add Category", style: .default) { (action) in
             
+            //Saves into the Category Model
             let newCategory = Category()
             newCategory.name = textField.text!
+            newCategory.color = UIColor.randomFlat().hexValue()
+            
             self.save(category: newCategory)
 
         }
